@@ -1,0 +1,46 @@
+#!/bin/bash
+# Database Backup and Recovery Script
+
+# MySQL Backup
+backup_mysql() {
+    echo "Starting MySQL Backup..."
+    mysqldump -u root -p'password' mydatabase > /backups/mydatabase_$(date +%F).sql
+    echo "MySQL Backup Completed!"
+}
+
+# MySQL Restore
+restore_mysql() {
+    echo "Restoring MySQL Database..."
+    mysql -u root -p'password' mydatabase < /backups/mydatabase.sql
+    echo "MySQL Restore Completed!"
+}
+
+# PostgreSQL Backup
+backup_postgresql() {
+    echo "Starting PostgreSQL Backup..."
+    pg_dump -U postgres -F c -b -v -f /backups/mydatabase_$(date +%F).dump mydatabase
+    echo "PostgreSQL Backup Completed!"
+}
+
+# PostgreSQL Restore
+restore_postgresql() {
+    echo "Restoring PostgreSQL Database..."
+    pg_restore -U postgres -d mydatabase -v /backups/mydatabase.dump
+    echo "PostgreSQL Restore Completed!"
+}
+
+# Menu for user selection
+echo "Select an option:"
+echo "1) Backup MySQL"
+echo "2) Restore MySQL"
+echo "3) Backup PostgreSQL"
+echo "4) Restore PostgreSQL"
+read -p "Enter option: " option
+
+case $option in
+    1) backup_mysql ;;
+    2) restore_mysql ;;
+    3) backup_postgresql ;;
+    4) restore_postgresql ;;
+    *) echo "Invalid option" ;;
+esac
